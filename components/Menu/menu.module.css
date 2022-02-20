@@ -1,0 +1,7 @@
+.nav {
+  transition: transform 0.3s ease-in-out;
+}
+
+.isClosed {
+  transform: translateY(100%) translateY(-52px);
+}
