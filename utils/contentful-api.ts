@@ -1,9 +1,13 @@
-import { ContentfulClientApi, createClient } from "contentful"
+import {
+  ContentfulClientApi,
+  createClient,
+  CreateClientParams,
+} from "contentful"
 
-const space = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
-const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
+const space = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID || ""
+const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN || ""
 
-const clientConfig: IContentfulClientConfig = {
+const clientConfig: CreateClientParams = {
   space: space,
   accessToken: accessToken,
 }
@@ -11,27 +15,24 @@ const clientConfig: IContentfulClientConfig = {
 const client: ContentfulClientApi = createClient(clientConfig)
 
 export const contentful = {
-  asset: (id: string, query?: IContentfulGetAssetQuery) => {
+  asset: (id: string, query?: any) => {
     return client.getAsset(id, query)
   },
-  assets: (query?: IContentGetAssetsQuery) => {
+  assets: (query?: any) => {
     return client.getAssets(query)
   },
   contentType: (id: string) => {
     return client.getContentType(id)
   },
-  contentTypes: (query?: Partial<IContentfulSearchQuery>) => {
+  contentTypes: (query?: any) => {
     return client.getContentTypes(query)
   },
-  entry: async <T = any>(
-    id: string,
-    query: Partial<IContentfulBaseQuery> = {}
-  ) => {
+  entry: async <T = any>(id: string, query: any = {}) => {
     return client.getEntry<T>(id, {
       ...query,
     })
   },
-  entries: async <T = any>(query: Partial<IContentfulGetEntriesQuery> = {}) => {
+  entries: async <T = any>(query: any = {}) => {
     return client.getEntries<T>({
       ...query,
     })
@@ -45,7 +46,7 @@ export const contentful = {
   parseEntries: (raw: any) => {
     return client.parseEntries(raw)
   },
-  sync: (query: Partial<IContentfulSyncQuery> = {}) => {
+  sync: (query: any = {}) => {
     return client.sync(query)
   },
 }
