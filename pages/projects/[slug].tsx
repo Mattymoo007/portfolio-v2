@@ -8,6 +8,10 @@ import DefaultLayout from "~/layouts/Default"
 import { IProjectFields } from "~/types/contentful"
 import { contentful } from "~/utils/contentful-api"
 
+const copyEmailToClipboard = async () => {
+  await navigator.clipboard.writeText("Mattymoo007@gmail.com")
+}
+
 const Project: FC<{
   currentProject: IProjectFields
   nextProject: IProjectFields
@@ -46,7 +50,10 @@ const Project: FC<{
           </div>
 
           <div className="grid grid-cols-2">
-            <button className="uppercase border border-black dark:border-white border-t-0 h-[35px]">
+            <button
+              onClick={copyEmailToClipboard}
+              className="uppercase border border-black dark:border-white border-t-0 h-[35px]"
+            >
               Copy mail 📋
             </button>
             <button className="uppercase border border-black dark:border-white border-l-0 border-t-0 h-[35px] flex items-center justify-center">

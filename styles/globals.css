@@ -53,3 +53,7 @@ html.dark {
     @apply mb-5;
   }
 }
+
+:root {
+  --animate-duration: 300ms;
+}
