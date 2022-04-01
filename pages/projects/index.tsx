@@ -7,6 +7,7 @@ import { useState } from "react"
 import { IProjectFields } from "~/types/contentful"
 import DefaultLayout from "~/layouts/Default"
 import SpaceInvader from "~/assets/svg/space-invader.svg"
+import Link from "next/link"
 
 const categories = [
   "all",
@@ -32,7 +33,11 @@ const Projects: NextPage<{ projects: IProjectFields[] }> = ({ projects }) => {
   return (
     <DefaultLayout showCountry={false} showWeather={false}>
       <section className="p-[30px] md:p-[30px] mt-[50px]">
-        <SpaceInvader className="cursor-pointer mx-auto relative dark:text-white" />
+        <Link href="/">
+          <a>
+            <SpaceInvader className="cursor-pointer mx-auto relative dark:text-white z-20" />
+          </a>
+        </Link>
 
         <h1 className="uppercase text-2xl text-center mt-8 font-lexend">
           Projects

@@ -6,6 +6,7 @@ import Weather from "~/components/Weather"
 import Modal from "~/components/Modal/Modal"
 import ContactForm from "~/components/ContactForm/ContactForm"
 import Link from "next/link"
+import QuoteBtn from "~/components/QuoteBtn"
 
 interface IThemeContext {
   isDark: boolean
@@ -55,15 +56,15 @@ const DefaultLayout: FC<{
       <div className="z-20 fixed bottom-0 left-0 w-full h-[20px] md:h-[30px] bg-light border-black dark:border-light dark:bg-black border-t"></div>
       <div className="z-20 fixed left-0 top-0 bottom-0 w-[20px] md:w-[30px] bg-light border-black dark:border-light dark:bg-black border-r"></div>
       <div className="z-20 fixed right-0 top-0 bottom-0 w-[20px] md:w-[30px] bg-light border-black dark:border-light dark:bg-black border-l"></div>
-      <div className="z-20 fixed top-0 left-0 w-full h-[20px] md:h-[29px] bg-light dark:bg-black"></div>
-      <div className="z-20 fixed bottom-0 left-0 w-full h-[20px] md:h-[29px] bg-light dark:bg-black"></div>
+      <div className="z-20 fixed top-0 left-0 w-full h-[19px] md:h-[29px] bg-light dark:bg-black"></div>
+      <div className="z-20 fixed bottom-0 left-0 w-full h-[19px] md:h-[29px] bg-light dark:bg-black"></div>
 
       {showWeather && (
         <Weather className="fixed z-10 top-[30px] left-1/2 -translate-x-1/2" />
       )}
 
       <button
-        className="fixed z-10 btn-primary border-b border-r top-[30px] left-[30px] w-[52px] px-0 md:px-5 md:w-auto"
+        className="fixed z-10 btn-primary border-b border-r top-[20px] left-[20px] md:top-[30px] md:left-[30px] w-[52px] px-0 md:px-5 md:w-auto"
         onClick={toggleTheme}
       >
         <span className="md:mr-2 text-sm">
@@ -72,19 +73,11 @@ const DefaultLayout: FC<{
         <span className="hidden md:inline">{!isDark ? "light" : "dark"}</span>
       </button>
 
-      <button className="fixed z-10 btn-primary border-b border-l top-[30px] right-[30px]">
-        {topLeftBtn ? (
-          topLeftBtn()
-        ) : (
-          <span>
-            Quote&nbsp;<span className="hidden md:inline">of the day</span>
-          </span>
-        )}
-      </button>
+      {topLeftBtn ? topLeftBtn() : <QuoteBtn />}
 
       <button
         onClick={() => setModalVisible(true)}
-        className="fixed z-10 btn-primary border-t border-r bottom-[30px] left-[30px]"
+        className="fixed z-10 btn-primary border-t border-r bottom-[20px] left-[20px] md:bottom-[30px] md:left-[30px]"
       >
         Contact <FiArrowRight size="1.2em" className="ml-2 hidden md:inline" />
       </button>
@@ -96,7 +89,7 @@ const DefaultLayout: FC<{
         </span>
       )}
 
-      <Menu className="fixed z-10 bottom-[30px] right-[30px]" />
+      <Menu className="fixed z-10 bottom-[20px] right-[20px] md:bottom-[30px] md:right-[30px]" />
 
       <main className="bg-light dark:bg-black min-h-screen p-[20px] md:p-[30px]">
         {children}

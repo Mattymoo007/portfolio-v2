@@ -8,8 +8,8 @@ const ProjectCard: FC<IProjectFields> = ({ slug, thumbnail, tags, title }) => {
 
   return (
     <Link href={slug ? `/projects/${slug}` : ""}>
-      <a className="relative w-full inline-block border border-black">
-        <div className="relative h-[280px] m-[18px] border border-black">
+      <a className="relative w-full inline-block border border-black dark:border-white">
+        <div className="relative aspect-video m-[18px] border border-black dark:border-white">
           <Image
             src={"https:" + thumbnail?.fields.file.url ?? ""}
             layout="fill"
@@ -22,7 +22,7 @@ const ProjectCard: FC<IProjectFields> = ({ slug, thumbnail, tags, title }) => {
           {title?.split(":")[0]}
         </span>
 
-        <span className="absolute uppercase font-poppins font-normal text-black/30 text-sm right-[17px] -bottom-[2px]">
+        <span className="absolute uppercase font-poppins font-normal text-black/30 dark:text-white/40 text-xs md:text-sm right-[17px] -bottom-[2px]">
           {tagsString}
         </span>
       </a>

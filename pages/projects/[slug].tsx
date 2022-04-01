@@ -6,11 +6,8 @@ import { FiArrowLeft } from "react-icons/fi"
 import ReactMarkdown from "react-markdown"
 import DefaultLayout from "~/layouts/Default"
 import { IProjectFields } from "~/types/contentful"
+import { emailAddress, twitterHandle } from "~/utils/constants"
 import { contentful } from "~/utils/contentful-api"
-
-const copyEmailToClipboard = async () => {
-  await navigator.clipboard.writeText("Mattymoo007@gmail.com")
-}
 
 const Project: FC<{
   currentProject: IProjectFields
@@ -23,7 +20,7 @@ const Project: FC<{
 }) => {
   const topLeftBtn = () => (
     <Link href="/projects">
-      <a className="flex items-center font-lexend font-medium">
+      <a className="fixed z-10 btn-primary border-b border-l top-[20px] right-[20px] md:top-[30px] md:right-[30px]">
         <FiArrowLeft className="mr-2" /> Go back
       </a>
     </Link>
@@ -35,30 +32,35 @@ const Project: FC<{
       showWeather={false}
       topLeftBtn={topLeftBtn}
     >
-      <section className="p-[30px] md:p-[30px] mt-[50px] grid grid-cols-3 gap-7">
+      <section className="p-[20px] md:p-[30px] mt-[52px] grid md:grid-cols-2 lg:grid-cols-3 gap-7">
         <div>
-          <div className="relative w-full border border-black mb-auto">
-            <div className="relative h-[280px] m-[18px] border border-black">
+          <div className="relative w-full border border-black dark:border-white mb-auto">
+            <div className="relative aspect-video m-[20px] border border-black dark:border-white">
               <Image
                 src={"https:" + thumbnail?.fields.file.url ?? ""}
                 layout="fill"
                 objectFit="cover"
                 alt={thumbnail?.fields.title}
-                className="relative h-[280px] m-[18px] border border-black"
+                className="relative h-[280px] m-[18px] border border-black "
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2">
             <button
-              onClick={copyEmailToClipboard}
+              onClick={() => navigator.clipboard.writeText(emailAddress)}
               className="uppercase border border-black dark:border-white border-t-0 h-[35px]"
             >
               Copy mail 📋
             </button>
-            <button className="uppercase border border-black dark:border-white border-l-0 border-t-0 h-[35px] flex items-center justify-center">
+            <a
+              href={twitterHandle}
+              target="_blank"
+              rel="noreferrer"
+              className="uppercase border border-black dark:border-white border-l-0 border-t-0 h-[35px] flex items-center justify-center"
+            >
               Twitter 🐤
-            </button>
+            </a>
             <div className="uppercase border border-black dark:border-white border-t-0 h-[35px] flex items-center justify-center col-span-2">
               hello
             </div>
@@ -69,8 +71,8 @@ const Project: FC<{
           <ReactMarkdown className="markdown">{body ? body : ""}</ReactMarkdown>
         </div>
 
-        <ul>
-          <li className="border-b border-black text-right py-3">
+        <ul className="mb-14">
+          <li className="border-b border-black dark:border-white text-right py-3 ">
             <Link href={slug ?? ""}>
               <a>Next project ...</a>
             </Link>
@@ -78,7 +80,7 @@ const Project: FC<{
           {otherProjects.map(project => (
             <li
               key={project.slug}
-              className="border-b border-black text-right py-3"
+              className="border-b border-black dark:border-white text-right py-3"
             >
               <Link href={project.slug ?? ""}>
                 <a>{project.title ?? ""}</a>

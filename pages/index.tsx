@@ -4,12 +4,17 @@ import ReactMarkdown from "react-markdown"
 import { contentful } from "~/utils/contentful-api"
 import SpaceInvader from "~/assets/svg/space-invader.svg"
 import DefaultLayout from "~/layouts/Default"
+import Link from "next/link"
 
 const Home: NextPage<{ text: string; image: Asset }> = ({ text }) => {
   return (
     <DefaultLayout>
       <div className="absolute grid place-content-center top-1/2 -translate-y-1/2">
-        <SpaceInvader className="cursor-pointer mx-auto relative dark:text-white z-20" />
+        <Link href="/">
+          <a>
+            <SpaceInvader className="cursor-pointer mx-auto relative dark:text-white z-20" />
+          </a>
+        </Link>
         <ReactMarkdown
           className="mt-6 uppercase w-[75%] md:w-[60%] text-center mx-auto leading-6 md:leading-8 text-sm md:text-xl tracking-wide"
           components={{
