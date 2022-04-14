@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { FiArrowLeft } from "react-icons/fi"
 import ReactMarkdown from "react-markdown"
 import DefaultLayout from "~/layouts/Default"
@@ -14,17 +14,24 @@ const Project: FC<{
   nextProject: IProjectFields
   otherProjects: IProjectFields[]
 }> = ({
-  currentProject: { thumbnail, body },
+  currentProject: { thumbnail, body, skillIcons },
   nextProject: { slug },
   otherProjects,
 }) => {
+  const [isCopied, setIsCopied] = useState(false)
+
   const topLeftBtn = () => (
     <Link href="/projects">
-      <a className="fixed z-10 btn-primary border-b border-l top-[20px] right-[20px] md:top-[30px] md:right-[30px]">
+      <a className="fixed z-10 btn-primary border-b border-r top-[20px] left-[20px] md:top-[30px] md:left-[30px]">
         <FiArrowLeft className="mr-2" /> Go back
       </a>
     </Link>
   )
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(emailAddress)
+    setIsCopied(true)
+  }
 
   return (
     <DefaultLayout
@@ -48,21 +55,40 @@ const Project: FC<{
 
           <div className="grid grid-cols-2">
             <button
-              onClick={() => navigator.clipboard.writeText(emailAddress)}
-              className="uppercase border border-black dark:border-white border-t-0 h-[35px]"
+              onClick={copyEmail}
+              className="font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]"
             >
-              Copy mail 📋
+              Copy mail {isCopied ? "✅" : "📋"}
             </button>
             <a
               href={twitterHandle}
               target="_blank"
               rel="noreferrer"
-              className="uppercase border border-black dark:border-white border-l-0 border-t-0 h-[35px] flex items-center justify-center"
+              className="font-lexend text-xs uppercase border border-black dark:border-white border-l-0 border-t-0 h-[35px] flex items-center justify-center"
             >
               Twitter 🐤
             </a>
+
             <div className="uppercase border border-black dark:border-white border-t-0 h-[35px] flex items-center justify-center col-span-2">
-              hello
+              {skillIcons &&
+                skillIcons.map((icon, index) => (
+                  <span
+                    key={index}
+                    className="relative w-6 h-6 mx-1 group flex justify-center"
+                  >
+                    <Image
+                      src={"https:" + icon.fields.file.url}
+                      alt={icon.fields.title}
+                      layout="fill"
+                      objectFit="contain"
+                    />
+
+                    <span className="pointer-events-none normal-case absolute dark:bg-white dark:text-black bg-black rounded text-white px-2 py-1 text-xs bottom-[-130%] opacity-0 group-hover:opacity-75 transition-opacity whitespace-nowrap flex justify-center">
+                      <span className="top-[-3px] absolute dark:bg-white bg-black w-[10px] h-[10px] rotate-45"></span>
+                      {icon.fields.title}
+                    </span>
+                  </span>
+                ))}
             </div>
           </div>
         </div>

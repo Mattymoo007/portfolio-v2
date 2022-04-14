@@ -23,15 +23,11 @@ const QuoteBtn = () => {
     fetchQuote()
   }, [fetchQuote])
 
-  const showQuote = () => {
-    setModalVisible(true)
-  }
-
   return (
     <>
       <button
-        onClick={showQuote}
-        className="fixed z-10 btn-primary border-b border-l top-[20px] right-[20px] md:top-[30px] md:right-[30px]"
+        onClick={() => setModalVisible(true)}
+        className="fixed z-10 btn-primary border-b border-r top-[20px] left-[20px] md:top-[30px] md:left-[30px] md:px-5 md:w-auto"
       >
         Quote&nbsp;<span className="hidden md:inline">of the day</span>
       </button>

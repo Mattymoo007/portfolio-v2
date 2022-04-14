@@ -3,5 +3,5 @@
 }
 
 .isClosed {
-  transform: translateY(100%) translateY(-52px);
+  transform: translateY(-100%) translateY(52px);
 }

@@ -32,10 +32,10 @@ const Projects: NextPage<{ projects: IProjectFields[] }> = ({ projects }) => {
 
   return (
     <DefaultLayout showCountry={false} showWeather={false}>
-      <section className="p-[30px] md:p-[30px] mt-[50px]">
+      <section className="mb-[50px] md:mb-0 p-[20px] md:p-[30px] mt-[50px]">
         <Link href="/">
           <a>
-            <SpaceInvader className="cursor-pointer mx-auto relative dark:text-white z-20" />
+            <SpaceInvader className="cursor-pointer mx-auto relative dark:text-white" />
           </a>
         </Link>
 

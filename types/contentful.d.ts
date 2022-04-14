@@ -47,6 +47,9 @@ export interface IProjectFields {
   /** Images */
   images?: Asset[] | undefined
 
+  /** Skill icons */
+  skillIcons?: Asset[] | undefined
+
   /** Tags */
   tags?:
     | (
