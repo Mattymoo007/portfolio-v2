@@ -11,9 +11,9 @@ import Link from "next/link"
 
 const categories = [
   "all",
+  "development",
   "product design",
   "graphic design",
-  "web design",
   "writing",
 ]
 
