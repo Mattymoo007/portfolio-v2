@@ -1,33 +1,41 @@
-import { Project } from "@prisma/client"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { FiArrowLeft } from "react-icons/fi"
 import ReactMarkdown from "react-markdown"
 import DefaultLayout from "~/layouts/Default"
-import { IProject, IProjectFields } from "~/types/contentful"
+import { IProjectFields } from "~/types/contentful"
 import { contentful } from "~/utils/contentful-api"
 import { prisma } from "~/utils/prisma"
 import { motion } from "framer-motion"
 import confetti from "canvas-confetti"
 
+type MergedProjectFields = IProjectFields & { claps: number; id: string }
+
 const Project: FC<{
-  currentProject: IProject
-  nextProject: IProjectFields
-  otherProjects: IProjectFields[]
-  prismaProject: Project
+  currentProject: MergedProjectFields
+  nextProject: MergedProjectFields
+  otherProjects: MergedProjectFields[]
 }> = ({
   currentProject: {
-    sys,
-    fields: { title, thumbnail, body, skillIcons, link },
+    id,
+    claps: dbClaps,
+    title,
+    thumbnail,
+    body,
+    skillIcons,
+    link,
   },
   nextProject: { slug },
   otherProjects,
-  prismaProject,
 }) => {
-  const [claps, setClaps] = useState(prismaProject?.claps ?? null)
+  const [claps, setClaps] = useState(0)
   const [imagesVisible, setImagesVisible] = useState(false)
+
+  useEffect(() => {
+    setClaps(dbClaps)
+  }, [dbClaps])
 
   const topLeftBtn = () => (
     <Link href="/projects">
@@ -52,7 +60,7 @@ const Project: FC<{
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        contentfulId: sys.id,
+        contentfulId: id,
         name: title,
       }),
     }).then(res => res.json())
@@ -199,14 +207,36 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async context => {
   const slug = context.params?.slug
 
-  const entries = await contentful.entries({
-    content_type: "project",
-  })
+  // Get contenful data
+  const entries = await contentful
+    .entries({
+      content_type: "project",
+    })
+    .catch(err => {
+      console.error(err)
+    })
+  // Get prisma data
+  const prismaProjects = await prisma.project
+    .findMany()
+    .catch(err => console.error(err))
 
-  const projectsLength = entries.items.length
+  if (!entries || !prismaProjects)
+    return { redirect: { destination: "/404", permanent: false } }
 
-  const projectIndex = entries.items.findIndex(project => {
-    return project.fields.slug === slug
+  // Merge data
+  const projects: MergedProjectFields[] = entries.items.map(project => ({
+    ...project.fields,
+    id: project.sys.id,
+    claps:
+      prismaProjects?.find(
+        prismaProject => prismaProject.contentfulId === project.sys.id
+      )?.claps ?? null,
+  }))
+
+  const projectsLength = projects.length
+
+  const projectIndex = projects.findIndex(project => {
+    return project.slug === slug
   })
 
   const nextProjectIndex =
@@ -216,31 +246,17 @@ export const getStaticProps: GetStaticProps = async context => {
       ? projectsLength - 1
       : projectIndex + 1
 
-  const currentProject = entries.items[projectIndex]
-  const nextProject = entries.items[nextProjectIndex]
-  const otherProjects = entries.items
-    .filter(
-      project =>
-        project.sys.id !== currentProject.sys.id &&
-        project.sys.id !== nextProject.sys.id
-    )
-    .map(project => project.fields)
-
-  // Get claps
-  const prismaProject = await prisma.project
-    .findFirst({
-      where: {
-        contentfulId: currentProject.sys.id,
-      },
-    })
-    .catch(() => null)
+  const currentProject = projects[projectIndex]
+  const nextProject = projects[nextProjectIndex]
+  const otherProjects = projects.filter(
+    project => project.id !== currentProject.id && project.id !== nextProject.id
+  )
 
   return {
     props: {
       currentProject: currentProject,
-      nextProject: nextProject.fields,
+      nextProject: nextProject,
       otherProjects: otherProjects,
-      prismaProject,
     },
     revalidate: 30,
   }
