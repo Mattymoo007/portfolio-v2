@@ -6,12 +6,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.body
+  const { contentfulId, name } = req.body
 
   const response = await prisma.project
-    .update({
-      where: { id: id },
-      data: {
+    .upsert({
+      where: { contentfulId: contentfulId },
+      create: {
+        contentfulId,
+        name,
+        claps: 1,
+      },
+      update: {
         claps: { increment: 1 },
       },
     })
@@ -20,6 +25,6 @@ export default async function handler(
       res.status(500).send("Error updating claps")
     })
 
-  console.log(`${response && response.claps} claps for project ${id}`)
+  console.log(`${response && response.claps} claps for project ${name}`)
   res.status(200).json(response)
 }

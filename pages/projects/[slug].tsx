@@ -19,13 +19,15 @@ const Project: FC<{
   prismaProject: Project
 }> = ({
   currentProject: {
-    fields: { thumbnail, body, skillIcons, link },
+    sys,
+    fields: { title, thumbnail, body, skillIcons, link },
   },
   nextProject: { slug },
   otherProjects,
   prismaProject,
 }) => {
-  const [claps, setClaps] = useState(prismaProject.claps)
+  const [claps, setClaps] = useState(prismaProject?.claps ?? null)
+  const [imagesVisible, setImagesVisible] = useState(false)
 
   const topLeftBtn = () => (
     <Link href="/projects">
@@ -35,19 +37,25 @@ const Project: FC<{
     </Link>
   )
 
+  const viewProjectAssets = () => {
+    if (link) window.open(link, "_blank")
+    else setImagesVisible(true)
+  }
+
   const updateClaps = async () => {
-    const data = await fetch("/api/update-claps", {
+    setClaps(claps + 1)
+    claps % 10 === 9 && makeFireworks()
+
+    await fetch("/api/update-claps", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: prismaProject.id,
+        contentfulId: sys.id,
+        name: title,
       }),
     }).then(res => res.json())
-    setClaps(data.claps)
-
-    claps % 10 === 9 && makeFireworks()
   }
 
   const makeFireworks = async () => {
@@ -89,7 +97,10 @@ const Project: FC<{
           </div>
 
           <div className="grid grid-cols-2">
-            <button className="font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]">
+            <button
+              onClick={viewProjectAssets}
+              className="font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]"
+            >
               View 👁️
             </button>
             <button
@@ -106,7 +117,7 @@ const Project: FC<{
               <span className="z-10">Clap 👏</span>
 
               {/* Claps counter */}
-              {claps > 0 && (
+              {claps && (
                 <motion.span
                   key={claps}
                   animate={{
@@ -216,11 +227,13 @@ export const getStaticProps: GetStaticProps = async context => {
     .map(project => project.fields)
 
   // Get claps
-  const prismaProject = await prisma.project.findFirst({
-    where: {
-      contentfulId: currentProject.sys.id,
-    },
-  })
+  const prismaProject = await prisma.project
+    .findFirst({
+      where: {
+        contentfulId: currentProject.sys.id,
+      },
+    })
+    .catch(() => null)
 
   return {
     props: {
@@ -229,7 +242,7 @@ export const getStaticProps: GetStaticProps = async context => {
       otherProjects: otherProjects,
       prismaProject,
     },
-    revalidate: 60,
+    revalidate: 30,
   }
 }
 
