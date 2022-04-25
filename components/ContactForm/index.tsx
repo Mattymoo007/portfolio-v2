@@ -16,6 +16,7 @@ const encode = (data: { [key: string]: string }) => {
 
 const ContactForm: FC<{ className?: string }> = ({ className }) => {
   const [isSent, setIsSent] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
 
   const { register, handleSubmit } = useForm<FormData>()
 
@@ -31,6 +32,11 @@ const ContactForm: FC<{ className?: string }> = ({ className }) => {
 
     setIsSent(true)
   })
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(emailAddress)
+    setIsCopied(true)
+  }
 
   const labelWrapperClasses = `block mb-3`
   const labelClasses = `text-xs tracking-widest`
@@ -82,9 +88,9 @@ const ContactForm: FC<{ className?: string }> = ({ className }) => {
         />
         <button
           className="uppercase border border-black dark:border-white border-t-0 h-[35px]"
-          onClick={() => navigator.clipboard.writeText(emailAddress)}
+          onClick={copyEmail}
         >
-          Copy mail 📋
+          Copy mail {isCopied ? "✅" : "📋"}
         </button>
         <a
           href={twitterHandle}

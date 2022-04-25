@@ -1,3 +1,4 @@
+import { Project } from "@prisma/client"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -5,20 +6,26 @@ import { FC, useState } from "react"
 import { FiArrowLeft } from "react-icons/fi"
 import ReactMarkdown from "react-markdown"
 import DefaultLayout from "~/layouts/Default"
-import { IProjectFields } from "~/types/contentful"
-import { emailAddress, twitterHandle } from "~/utils/constants"
+import { IProject, IProjectFields } from "~/types/contentful"
 import { contentful } from "~/utils/contentful-api"
+import { prisma } from "~/utils/prisma"
+import { motion } from "framer-motion"
+import confetti from "canvas-confetti"
 
 const Project: FC<{
-  currentProject: IProjectFields
+  currentProject: IProject
   nextProject: IProjectFields
   otherProjects: IProjectFields[]
+  prismaProject: Project
 }> = ({
-  currentProject: { thumbnail, body, skillIcons },
+  currentProject: {
+    fields: { thumbnail, body, skillIcons, link },
+  },
   nextProject: { slug },
   otherProjects,
+  prismaProject,
 }) => {
-  const [isCopied, setIsCopied] = useState(false)
+  const [claps, setClaps] = useState(prismaProject.claps)
 
   const topLeftBtn = () => (
     <Link href="/projects">
@@ -28,9 +35,37 @@ const Project: FC<{
     </Link>
   )
 
-  const copyEmail = () => {
-    navigator.clipboard.writeText(emailAddress)
-    setIsCopied(true)
+  const updateClaps = async () => {
+    const data = await fetch("/api/update-claps", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: prismaProject.id,
+      }),
+    }).then(res => res.json())
+    setClaps(data.claps)
+
+    claps % 10 === 9 && makeFireworks()
+  }
+
+  const makeFireworks = async () => {
+    const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
+
+    for (let i = 0; i < 3; i++) {
+      confetti({
+        particleCount: 100,
+        startVelocity: 30,
+        spread: 360,
+        origin: {
+          x: Math.random(),
+          y: Math.random() - 0.2,
+        },
+      })
+
+      await timer(500)
+    }
   }
 
   return (
@@ -54,20 +89,38 @@ const Project: FC<{
           </div>
 
           <div className="grid grid-cols-2">
-            <button
-              onClick={copyEmail}
-              className="font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]"
-            >
-              Copy mail {isCopied ? "✅" : "📋"}
+            <button className="font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]">
+              View 👁️
             </button>
-            <a
-              href={twitterHandle}
-              target="_blank"
-              rel="noreferrer"
-              className="font-lexend text-xs uppercase border border-black dark:border-white border-l-0 border-t-0 h-[35px] flex items-center justify-center"
+            <button
+              onClick={updateClaps}
+              className="font-lexend text-xs uppercase border border-black dark:border-white border-l-0 border-t-0 h-[35px] flex items-center justify-center relative"
             >
-              Twitter 🐤
-            </a>
+              {/* Clap progress bar */}
+              <div
+                className="absolute h-full bg-gray-300/90 left-0 transition-[width]"
+                style={{ width: `${(claps % 10) * 10}%` }}
+              />
+
+              {/* Clap text */}
+              <span className="z-10">Clap 👏</span>
+
+              {/* Claps counter */}
+              {claps > 0 && (
+                <motion.span
+                  key={claps}
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    transition: {
+                      duration: 0.2,
+                    },
+                  }}
+                  className="rounded-full px-2 py-[1px] center ml-2 border border-black font-poppins z-10"
+                >
+                  {claps}
+                </motion.span>
+              )}
+            </button>
 
             <div className="uppercase border border-black dark:border-white border-t-0 h-[35px] flex items-center justify-center col-span-2">
               {skillIcons &&
@@ -99,7 +152,7 @@ const Project: FC<{
 
         <ul className="mb-14">
           <li className="border-b border-black dark:border-white text-right py-3 ">
-            <Link href={slug ?? ""}>
+            <Link href={`/projects/${slug}` ?? ""}>
               <a>Next project ...</a>
             </Link>
           </li>
@@ -108,7 +161,7 @@ const Project: FC<{
               key={project.slug}
               className="border-b border-black dark:border-white text-right py-3"
             >
-              <Link href={project.slug ?? ""}>
+              <Link href={`/projects/${project.slug}` ?? ""}>
                 <a>{project.title ?? ""}</a>
               </Link>
             </li>
@@ -138,6 +191,7 @@ export const getStaticProps: GetStaticProps = async context => {
   const entries = await contentful.entries({
     content_type: "project",
   })
+
   const projectsLength = entries.items.length
 
   const projectIndex = entries.items.findIndex(project => {
@@ -161,12 +215,21 @@ export const getStaticProps: GetStaticProps = async context => {
     )
     .map(project => project.fields)
 
+  // Get claps
+  const prismaProject = await prisma.project.findFirst({
+    where: {
+      contentfulId: currentProject.sys.id,
+    },
+  })
+
   return {
     props: {
-      currentProject: currentProject.fields,
+      currentProject: currentProject,
       nextProject: nextProject.fields,
       otherProjects: otherProjects,
+      prismaProject,
     },
+    revalidate: 60,
   }
 }
 

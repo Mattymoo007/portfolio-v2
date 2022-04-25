@@ -27,7 +27,7 @@ const ProjectCard: FC<IProjectFields> = ({ slug, thumbnail, tags, title }) => {
         </span>
 
         <span
-          className="absolute uppercase font-poppins font-normal text-black/30 dark:text-white/40 text-xs md:text-sm max-w-[90
+          className="absolute uppercase font-poppins font-normal text-black/30 dark:text-white/60 text-xs md:text-sm max-w-[90
         %] text-ellipsis overflow-hidden right-[14px] md:right-[17px] -bottom-[2px] whitespace-nowrap"
         >
           {tagsString}

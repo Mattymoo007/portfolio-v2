@@ -1,7 +1,7 @@
 import { createContext, FC, useEffect, useState } from "react"
 import { initTheme, setTheme } from "~/utils/color-scheme"
 import { FiMoon, FiSun } from "react-icons/fi"
-import Menu from "~/components/Menu/Menu"
+import Menu from "~/components/Menu"
 import Weather from "~/components/Weather"
 import QuoteBtn from "~/components/QuoteBtn"
 import ContactBtn from "~/components/ContactBtn"

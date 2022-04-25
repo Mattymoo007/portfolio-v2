@@ -33,7 +33,7 @@ export interface IProjectFields {
   title?: string | undefined
 
   /** Slug */
-  slug?: string | undefined
+  slug: string
 
   /** Thumbnail */
   thumbnail?: Asset | undefined
@@ -47,6 +47,9 @@ export interface IProjectFields {
   /** Images */
   images?: Asset[] | undefined
 
+  /** Link */
+  link?: string | undefined
+
   /** Skill icons */
   skillIcons?: Asset[] | undefined
 
@@ -58,6 +61,7 @@ export interface IProjectFields {
         | "web design"
         | "writing"
         | "branding"
+        | "development"
       )[]
     | undefined
 }

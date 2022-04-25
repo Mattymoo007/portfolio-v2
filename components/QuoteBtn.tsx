@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from "react"
-import Modal from "./Modal/Modal"
+import Modal from "./Modal"
 import Line from "~/assets/svg/decorative.svg"
+import { AnimatePresence } from "framer-motion"
 
 type Quote = {
   content: string
@@ -32,19 +33,22 @@ const QuoteBtn = () => {
         Quote&nbsp;<span className="hidden md:inline">of the day</span>
       </button>
 
-      <Modal
-        setIsVisible={(e: boolean) => setModalVisible(e)}
-        modalClasses="p-[20px] md:p-[30px] border border-black dark:border-white bg-light dark:bg-black w-[80%] md:w-[30%]"
-        show={modalVisible}
-      >
-        {quote && (
-          <div className="flex flex-col items-center">
-            <p className="text-center">{quote.content}</p>
-            <Line className="my-5 dark:text-white" />
-            <p className="text-center opacity-70">{quote.author}</p>
-          </div>
+      <AnimatePresence initial={false} exitBeforeEnter={true}>
+        {modalVisible && (
+          <Modal
+            setIsVisible={(e: boolean) => setModalVisible(e)}
+            show={modalVisible}
+          >
+            {quote && (
+              <div className="flex flex-col items-center">
+                <p className="text-center">{quote.content}</p>
+                <Line className="my-5 dark:text-white" />
+                <p className="text-center opacity-70">{quote.author}</p>
+              </div>
+            )}
+          </Modal>
         )}
-      </Modal>
+      </AnimatePresence>
     </>
   )
 }

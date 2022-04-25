@@ -8,6 +8,19 @@
     transform: rotate(-90deg) translateX(-100%);
     transform-origin: left;
   }
+  .center {
+    @apply flex items-center justify-center;
+  }
+  .bg-dotted {
+    background-size: 10px 10px;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #000000 0,
+      #000000 1px,
+      #ffffff 0,
+      #ffffff 50%
+    );
+  }
 }
 
 @layer components {
@@ -56,7 +69,7 @@ html.dark {
     position: relative;
     &:before {
       content: "";
-      @apply absolute bottom-0 w-full h-1/6 bg-black opacity-40 transition-transform;
+      @apply absolute bottom-0 w-full h-1/6 bg-black/40 dark:bg-white/50 transition-transform;
     }
     &:hover {
       cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='25' height='30' viewport='0 0 100 100' style='fill:black;font-size:15px;'><text y='50%'>🚀</text></svg>")
