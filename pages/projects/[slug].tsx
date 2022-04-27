@@ -26,6 +26,7 @@ const Project: FC<{
     body,
     skillIcons,
     link,
+    images,
   },
   nextProject: { slug },
   otherProjects,
@@ -47,7 +48,7 @@ const Project: FC<{
 
   const viewProjectAssets = () => {
     if (link) window.open(link, "_blank")
-    else setImagesVisible(true)
+    else setImagesVisible(!imagesVisible)
   }
 
   const updateClaps = async () => {
@@ -91,6 +92,7 @@ const Project: FC<{
       topLeftBtn={topLeftBtn}
     >
       <section className="p-[20px] md:p-[30px] mt-[52px] grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+        {/* Image and action buttons */}
         <div>
           <div className="relative w-full border border-black dark:border-white mb-auto">
             <div className="relative aspect-video m-[20px] border border-black dark:border-white">
@@ -109,7 +111,11 @@ const Project: FC<{
               onClick={viewProjectAssets}
               className="font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]"
             >
-              View 👁️
+              {link
+                ? "Go to site 💻"
+                : imagesVisible
+                ? "Description 📝"
+                : "View 📷"}
             </button>
             <button
               onClick={updateClaps}
@@ -165,10 +171,30 @@ const Project: FC<{
           </div>
         </div>
 
-        <div>
-          <ReactMarkdown className="markdown">{body ? body : ""}</ReactMarkdown>
-        </div>
+        {imagesVisible ? (
+          <div className="relative">
+            {images &&
+              images.map(image => (
+                <div key={image.fields.title} className="mb-4 ">
+                  <Image
+                    src={"https:" + image?.fields.file.url ?? ""}
+                    layout="responsive"
+                    width={image?.fields.file.details.image?.width ?? 0}
+                    height={image?.fields.file.details.image?.height ?? 0}
+                    alt={image?.fields.title}
+                  />
+                </div>
+              ))}
+          </div>
+        ) : (
+          <div>
+            <ReactMarkdown className="markdown">
+              {body ? body : ""}
+            </ReactMarkdown>
+          </div>
+        )}
 
+        {/* Project navigation */}
         <ul className="mb-14">
           <li className="border-b border-black dark:border-white text-right py-3 ">
             <Link href={`/projects/${slug}` ?? ""}>
