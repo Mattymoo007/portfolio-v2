@@ -10,6 +10,7 @@ import { contentful } from "~/utils/contentful-api"
 import { prisma } from "~/utils/prisma"
 import { motion } from "framer-motion"
 import confetti from "canvas-confetti"
+import Spinner from "~/components/Spinner"
 
 type MergedProjectFields = IProjectFields & { claps: number; id: string }
 
@@ -152,7 +153,7 @@ const Project: FC<{
                 skillIcons.map((icon, index) => (
                   <span
                     key={index}
-                    className="relative w-6 h-6 mx-1 group flex justify-center"
+                    className="relative w-6 h-6 mx-1 group flex justify-center "
                   >
                     <Image
                       src={"https:" + icon.fields.file.url}
@@ -172,10 +173,17 @@ const Project: FC<{
         </div>
 
         {imagesVisible ? (
-          <div className="relative">
+          <div>
             {images &&
               images.map(image => (
-                <div key={image.fields.title} className="mb-4 ">
+                <div
+                  key={image.fields.title}
+                  className="mb-4 bg-gray-100 relative"
+                >
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <Spinner />
+                  </div>
+
                   <Image
                     src={"https:" + image?.fields.file.url ?? ""}
                     layout="responsive"
