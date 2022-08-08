@@ -9,13 +9,7 @@ import DefaultLayout from "~/layouts/Default"
 import SpaceInvader from "~/assets/svg/space-invader.svg"
 import Link from "next/link"
 
-const categories = [
-  "all",
-  "development",
-  "product design",
-  "graphic design",
-  "writing",
-]
+const categories = ["all", "web", "product design", "graphic design", "writing"]
 
 const Projects: NextPage<{ projects: IProjectFields[] }> = ({ projects }) => {
   const [filteredProjects, setFilteredProjects] = useState([...projects])

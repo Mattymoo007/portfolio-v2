@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import "freakflags";
+@import "./animations.css";
 
 @layer utilities {
   .vertical-text {
@@ -38,6 +39,10 @@ h2,
 h3,
 h4 {
   @apply font-poppins mb-5 text-2xl;
+}
+
+h3 {
+  @apply text-lg;
 }
 
 p {
@@ -79,6 +84,49 @@ html.dark {
   }
 }
 
+.list {
+  @apply pl-4;
+}
+
+.list li {
+  @apply list-disc mb-1;
+}
+
 :root {
   --animate-duration: 300ms;
+}
+
+.paragraph {
+  p {
+    @apply mb-6 last:mb-0;
+  }
+}
+
+.hover-pulse:hover {
+  @apply cursor-none inline-block;
+  animation: pulsing 1s infinite;
+}
+
+.hover-spin:hover {
+  @apply cursor-none inline-block animate-spin;
+}
+
+.hover-vibrate:hover {
+  @apply cursor-none inline-block;
+  animation: vibrating 0.25s infinite;
+}
+
+.hover-shake:hover {
+  @apply cursor-none inline-block;
+  animation: shaking 1s infinite;
+}
+
+.hover-wobble:hover {
+  @apply cursor-none inline-block;
+  animation: wobble 800ms cubic-bezier(0.37, 0, 0.63, 1) 0s infinite;
+}
+
+.hover-jello:hover {
+  @apply cursor-none inline-block;
+  animation: jello 800ms cubic-bezier(0.61, 1, 0.88, 1) 0s infinite;
 }

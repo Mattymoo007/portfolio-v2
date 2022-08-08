@@ -9,20 +9,35 @@ import Link from "next/link"
 const Home: NextPage<{ text: string; image: Asset }> = ({ text }) => {
   return (
     <DefaultLayout>
-      <div className="absolute grid place-content-center top-1/2 -translate-y-1/2">
+      <div className="mt-32 mb-28">
         <Link href="/">
           <a>
             <SpaceInvader className="cursor-pointer mx-auto relative dark:text-white z-20" />
           </a>
         </Link>
-        <ReactMarkdown
-          className="mt-6 uppercase w-[75%] md:w-[60%] text-center mx-auto leading-6 md:leading-8 text-sm md:text-xl tracking-wide"
-          components={{
-            p: ({ children }) => <p className="mb-7 last:mb-0">{children}</p>,
-          }}
-        >
-          {text}
-        </ReactMarkdown>
+
+        <div className="select-none paragraph mt-6 w-[85%] md:w-[60%] text-center mx-auto leading-6 md:leading-8  md:text-xl tracking-wide">
+          <p>
+            Greetings fellow traveller!{" "}
+            <span className="hover-vibrate">👋</span>
+          </p>
+          <p>
+            My name is Matthew. Im a product designer gone web developer that
+            loves to create functional stellar-looking interfaces{" "}
+            <span className="hover-shake">📱</span>. I am extremly curious,
+            constantly challenging myself to grow my skills and discover new,
+            interesting ideas. <span className="hover-spin">🧱</span>
+          </p>
+          <p>
+            With an eye for design <span className="hover-wobble">💅</span> and
+            a mind made for logic <span className="hover-jello">🧠</span>, I
+            combine my skills to make my ideas come to life.
+          </p>
+          <p>
+            Welcome to my playground. Enjoy!{" "}
+            <span className="hover-pulse">💖</span>
+          </p>
+        </div>
       </div>
     </DefaultLayout>
   )

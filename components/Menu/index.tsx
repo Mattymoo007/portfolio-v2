@@ -1,25 +1,42 @@
 import Link from "next/link"
-import { FC, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import { FiMenu, FiX } from "react-icons/fi"
-import { twitterHandle } from "~/utils/constants"
+import { MdHome } from "react-icons/md"
 import style from "./menu.module.css"
 
 const Menu: FC<{ className: string }> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
 
+  function useOutsideAlerter(ref: any) {
+    useEffect(() => {
+      function handleClickOutside(event: MouseEvent) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setIsOpen(false)
+        }
+      }
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside)
+      }
+    }, [ref])
+  }
+
+  const wrapperRef = useRef(null)
+  useOutsideAlerter(wrapperRef)
+
   return (
-    <nav className={`${className} ${!isOpen && style.isClosed} ${style.nav}`}>
+    <nav
+      className={`${className} ${!isOpen && style.isClosed} ${style.nav}`}
+      ref={wrapperRef}
+    >
       <Link href="/">
-        <a className="w-full btn-primary border-l">Home</a>
+        <a className="w-full btn-primary border-l">
+          <MdHome size="1.5em" />
+        </a>
       </Link>
-      <a
-        href={twitterHandle}
-        target="_blank"
-        rel="noreferrer"
-        className="w-full btn-primary border-l border-t"
-      >
-        Twitter
-      </a>
+      {/* <Link href="/cv">
+        <a className="w-full btn-primary border-l border-t">CV</a>
+      </Link> */}
       <Link href="/projects">
         <a className="w-full btn-primary border border-r-0">Projects</a>
       </Link>

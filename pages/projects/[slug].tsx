@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { FC, useEffect, useState } from "react"
-import { FiArrowLeft } from "react-icons/fi"
+import { FiArrowLeft, FiArrowRight } from "react-icons/fi"
 import ReactMarkdown from "react-markdown"
 import DefaultLayout from "~/layouts/Default"
 import { IProjectFields } from "~/types/contentful"
@@ -56,16 +56,16 @@ const Project: FC<{
     setClaps(claps + 1)
     claps % 10 === 9 && makeFireworks()
 
-    await fetch("/api/update-claps", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contentfulId: id,
-        name: title,
-      }),
-    }).then(res => res.json())
+    // await fetch("/api/update-claps", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     contentfulId: id,
+    //     name: title,
+    //   }),
+    // }).then(res => res.json())
   }
 
   const makeFireworks = async () => {
@@ -110,13 +110,19 @@ const Project: FC<{
           <div className="grid grid-cols-2">
             <button
               onClick={viewProjectAssets}
-              className="font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]"
+              className="group font-lexend text-xs uppercase border border-black dark:border-white border-t-0 h-[35px]"
             >
-              {link
-                ? "Go to site 💻"
-                : imagesVisible
-                ? "Description 📝"
-                : "View 📷"}
+              <FiArrowRight
+                className="group-hover:inline-block hidden mr-1 mb-[2px]"
+                size="1.1em"
+              />
+              <span>
+                {link
+                  ? "Go to site 💻"
+                  : imagesVisible
+                  ? "Description 📝"
+                  : "View 📷"}
+              </span>
             </button>
             <button
               onClick={updateClaps}
@@ -249,22 +255,17 @@ export const getStaticProps: GetStaticProps = async context => {
     .catch(err => {
       console.error(err)
     })
-  // Get prisma data
-  const prismaProjects = await prisma.project
-    .findMany()
-    .catch(err => console.error(err))
 
-  if (!entries || !prismaProjects)
-    return { redirect: { destination: "/404", permanent: false } }
+  // Random integer bewtween 0 and 20
+  const randomIndex = Math.floor(Math.random() * 20)
+
+  if (!entries) return { redirect: { destination: "/404", permanent: false } }
 
   // Merge data
   const projects: MergedProjectFields[] = entries.items.map(project => ({
     ...project.fields,
     id: project.sys.id,
-    claps:
-      prismaProjects?.find(
-        prismaProject => prismaProject.contentfulId === project.sys.id
-      )?.claps ?? null,
+    claps: randomIndex,
   }))
 
   const projectsLength = projects.length

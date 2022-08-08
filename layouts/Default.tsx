@@ -73,7 +73,7 @@ const DefaultLayout: FC<{
       {showCountry && (
         <span className="fixed z-10 bottom-[30px] left-1/2 text-xs md:text-base -translate-x-1/2 font-lexend h-[52px] flex items-center uppercase">
           <span className="hidden md:block">Currently based in:</span>
-          <div className="fflag fflag-BE ff-md ml-2 border"></div>
+          <div className="fflag fflag-BE ff-md ml-2 border border-black dark:border-grey"></div>
         </span>
       )}
 
